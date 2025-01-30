@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+        header {
+            background-color: #007bff;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0056b3;
+            width: 100%;
+            max-width: 900px;
+            padding: 10px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #fff;
+            padding: 15px 25px;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            font-weight: bold;
+            border-radius: 10px;
+            margin: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #004085;
+            transform: scale(1.1);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 40px;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .hidden-button {
+            display: none;
+            margin-top: 20px;
+        }
+        footer {
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            margin-top: 40px;
+            border-radius: 15px 15px 0 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Login to Online Calculators</h1>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="calculators.html">Calculators</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+</nav>
+
+<div class="login-container">
+    <h2>Enter Password</h2>
+    <form id="loginForm">
+        <input type="password" id="password" class="input-field" placeholder="Enter password" required>
+        <button type="button" class="submit-btn" onclick="verifyPassword()">Submit</button>
+    </form>
+    
+    <div id="successMessage" class="hidden-button">
+        <a href="main.html" class="submit-btn">Go to Main Page</a>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Online Calculators. All rights reserved.</p>
+</footer>
+
+<script>
+    function verifyPassword() {
+        const password = document.getElementById('password').value;
+        const successMessage = document.getElementById('successMessage');
+        
+        if (password === '248') {
+            successMessage.style.display = 'block';  // Show the button
+        } else {
+            alert('Incorrect password. Please try again.');
+        }
+    }
+</script>
+
+</body>
+</html>

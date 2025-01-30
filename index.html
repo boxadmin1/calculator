@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Calculators</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+        header {
+            background-color: #007bff;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0056b3;
+            width: 100%;
+            max-width: 900px;
+            padding: 10px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #fff;
+            padding: 15px 25px;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            font-weight: bold;
+            border-radius: 10px;
+            margin: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #004085;
+            transform: scale(1.1);
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #fff;
+            padding: 40px;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            width: 200px;
+            padding: 15px;
+            margin: 10px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        footer {
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            margin-top: 40px;
+            border-radius: 15px 15px 0 0;
+            position: relative;
+        }
+        /* New small login box above the Choose a Calculator box */
+        .login-box {
+            background-color: #007bff;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .login-btn {
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #007bff;
+            font-weight: bold;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #0056b3;
+            color: #fff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Online Calculators</h1>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="calculators.html">Calculators</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+</nav>
+
+<!-- New login box with the blue login button -->
+<div class="login-box">
+    <a href="login.html" class="login-btn">Login</a>
+</div>
+
+<div class="container">
+    <h2>Choose a Calculator</h2>
+    <p>Click below to access either the basic or scientific calculator:</p>
+    <a href="calculators.html" class="button">Go to Calculators</a>
+</div>
+
+<footer>
+    <p>&copy; 2025 Online Calculators. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
