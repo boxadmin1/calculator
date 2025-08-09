@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.0/math.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        .calculator-container {
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+        }
+        .calculator-btn {
+            background-color: #e9ecef;
+            color: #495057;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .calculator-btn:hover {
+            background-color: #dee2e6;
+        }
+        .calculator-btn:active {
+            transform: scale(0.98);
+        }
+        .calculator-btn.operator {
+            background-color: #20c997;
+            color: white;
+        }
+        .calculator-btn.operator:hover {
+            background-color: #1aae82;
+        }
+        .calculator-btn.special {
+            background-color: #f1f3f5;
+            color: #868e96;
+        }
+        .calculator-btn.special:hover {
+            background-color: #e9ecef;
+        }
+        .ai-modal {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        .ai-chat-content {
+            background-color: #2c3e50;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .chat-message-user {
+            background-color: #3498db;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1.5rem 1.5rem 0.25rem 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-left: auto;
+            align-self: flex-end;
+            max-width: 75%;
+        }
+        .chat-message-ai {
+            background-color: #2b395e;
+            color: #e0e0e0;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1.5rem 1.5rem 1.5rem 0.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-right: auto;
+            align-self: flex-start;
+            max-width: 75%;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Calculator Container -->
+    <div class="calculator-container w-full p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Calculator</h1>
+            <button id="open-ai-chat" class="px-4 py-2 rounded-full bg-[#20c997] text-white font-semibold hover:bg-[#1aae82] transition-colors">
+                Ask AI
+            </button>
+        </div>
+
+        <div class="mb-4 text-right bg-gray-100 p-4 rounded-xl shadow-inner">
+            <div id="calculator-expression" class="text-xl h-8 overflow-hidden whitespace-nowrap text-gray-500"></div>
+            <div id="calculator-result" class="text-4xl font-bold h-12 overflow-hidden whitespace-nowrap text-gray-800">0</div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2">
+            <button class="calculator-btn special">AC</button>
+            <button class="calculator-btn special">DEL</button>
+            <button class="calculator-btn special">(</button>
+            <button class="calculator-btn special">)</button>
+            
+            <button class="calculator-btn rounded-xl">7</button>
+            <button class="calculator-btn rounded-xl">8</button>
+            <button class="calculator-btn rounded-xl">9</button>
+            <button class="calculator-btn operator rounded-xl">/</button>
+
+            <button class="calculator-btn rounded-xl">4</button>
+            <button class="calculator-btn rounded-xl">5</button>
+            <button class="calculator-btn rounded-xl">6</button>
+            <button class="calculator-btn operator rounded-xl">*</button>
+
+            <button class="calculator-btn rounded-xl">1</button>
+            <button class="calculator-btn rounded-xl">2</button>
+            <button class="calculator-btn rounded-xl">3</button>
+            <button class="calculator-btn operator rounded-xl">-</button>
+
+            <button class="calculator-btn special rounded-xl">^</button>
+            <button class="calculator-btn rounded-xl">0</button>
+            <button class="calculator-btn rounded-xl">.</button>
+            <button class="calculator-btn operator rounded-xl">=</button>
+        </div>
+    </div>
+
+    <!-- AI Chat Modal -->
+    <div id="ai-chat-modal" class="ai-modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="ai-chat-content w-full max-w-xl h-[90vh] rounded-3xl p-6 relative flex flex-col">
+            <button id="close-ai-chat" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <h2 class="text-2xl font-bold mb-4 text-white">AI Assistant</h2>
+
+            <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4">
+                <div class="chat-message-ai w-fit">Hello, I'm your AI assistant. How can I help you?</div>
+            </div>
+            
+            <div class="p-4 flex items-center gap-4">
+                <input id="chat-input" type="text" placeholder="Send a message..." class="flex-grow p-3 rounded-full bg-[#1e2a4d] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                <button id="chat-send" class="p-3 bg-[#3498db] text-white rounded-full hover:bg-[#2980b9] transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div id="message-box" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 hidden">
+        <div class="bg-[#2c3e50] p-6 rounded-2xl shadow-xl max-w-sm text-center">
+            <p id="message-content" class="text-white text-lg"></p>
+            <button onclick="document.getElementById('message-box').classList.add('hidden')" class="mt-4 px-6 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold">OK</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const openAiChatBtn = document.getElementById('open-ai-chat');
+            const aiChatModal = document.getElementById('ai-chat-modal');
+            const closeAiChatBtn = document.getElementById('close-ai-chat');
+            const calculatorExpressionDisplay = document.getElementById('calculator-expression');
+            const calculatorResultDisplay = document.getElementById('calculator-result');
+            const calculatorButtons = document.querySelectorAll('.calculator-container .calculator-btn');
+            
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send');
+            
+            const messageBox = document.getElementById('message-box');
+            const messageContent = document.getElementById('message-content');
+            
+            let calculatorExpression = '';
+            let calculatorResult = '0';
+            let isResultDisplayed = false;
+            let isAiWorking = false;
+
+            // Calculator Functions
+            openAiChatBtn.addEventListener('click', () => aiChatModal.classList.remove('hidden'));
+            closeAiChatBtn.addEventListener('click', () => aiChatModal.classList.add('hidden'));
+
+            calculatorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.textContent;
+                    if (value === 'AC') {
+                        calculatorExpression = '';
+                        calculatorResult = '0';
+                        isResultDisplayed = false;
+                    } else if (value === 'DEL') {
+                        calculatorExpression = calculatorExpression.slice(0, -1);
+                        if (calculatorExpression === '') {
+                            calculatorResult = '0';
+                        }
+                    } else if (value === '=') {
+                        try {
+                            const expressionToEvaluate = calculatorExpression.replace('^', '**');
+                            calculatorResult = math.evaluate(expressionToEvaluate);
+                        } catch (e) {
+                            calculatorResult = 'Error';
+                        }
+                        isResultDisplayed = true;
+                    } else {
+                        if (isResultDisplayed && !isOperator(value) && !['(', ')'].includes(value)) {
+                            calculatorExpression = value;
+                            isResultDisplayed = false;
+                        } else {
+                            calculatorExpression += value;
+                            isResultDisplayed = false;
+                        }
+                    }
+                    updateCalculatorDisplay();
+                });
+            });
+
+            function isOperator(char) {
+                return ['+', '-', '*', '/', '^'].includes(char);
+            }
+
+            function updateCalculatorDisplay() {
+                calculatorExpressionDisplay.textContent = calculatorExpression;
+                calculatorResultDisplay.textContent = calculatorResult;
+            }
+
+            // AI Chat Functions
+            chatSendBtn.addEventListener('click', handleAiRequest);
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleAiRequest();
+            });
+
+            function addChatMessage(text, sender) {
+                const messageElement = document.createElement('div');
+                const messageClass = sender === 'user' ? 'chat-message-user' : 'chat-message-ai';
+                messageElement.classList.add('mt-4');
+                messageElement.classList.add(messageClass);
+                messageElement.textContent = text;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function handleAiRequest() {
+                const prompt = chatInput.value.trim();
+                if (!prompt) return;
+
+                addChatMessage(prompt, 'user');
+                chatInput.value = '';
+                isAiWorking = true;
+                chatInput.disabled = true;
+                chatSendBtn.disabled = true;
+
+                const loadingMessage = document.createElement('div');
+                loadingMessage.id = 'ai-loading';
+                loadingMessage.classList.add('chat-message-ai', 'mt-4', 'animate-pulse');
+                loadingMessage.textContent = 'Assistant is typing...';
+                chatMessages.appendChild(loadingMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                let retries = 0;
+                const maxRetries = 5;
+                const baseDelay = 1000;
+
+                while (retries < maxRetries) {
+                    try {
+                        const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                        const apiKey = "";
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        
+                        if (response.ok && result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            
+                            const text = result.candidates[0].content.parts[0].text;
+                            document.getElementById('ai-loading').remove();
+                            addChatMessage(text, 'ai');
+                            break;
+                        } else {
+                            const errorMessage = result.error?.message || 'An unknown error occurred.';
+                            console.error('API Error:', errorMessage);
+                            throw new Error(errorMessage);
+                        }
+                    } catch (error) {
+                        retries++;
+                        console.error(`Attempt ${retries} failed. Retrying in ${baseDelay * Math.pow(2, retries - 1)}ms...`, error);
+                        if (retries < maxRetries) {
+                            await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, retries - 1)));
+                        } else {
+                            document.getElementById('ai-loading').textContent = 'Error: Could not get a response from the AI.';
+                            showMessage('Could not get a response from the AI. Please try again later.');
+                        }
+                    }
+                }
+
+                isAiWorking = false;
+                chatInput.disabled = false;
+                chatSendBtn.disabled = false;
+                chatInput.focus();
+            }
+
+            // Initial setup
+            updateCalculatorDisplay();
+        })();
+    </script>
+</body>
+</html>
